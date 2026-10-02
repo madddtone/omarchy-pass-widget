@@ -30,7 +30,8 @@
       "passCliBin": "",
       "vaultConfig": "",
       "gitRemote": "",
-      "gitAuto": "On"
+      "gitAuto": "On",
+      "requirePin": "Off"
     },
     "schema": [
       { "key": "glyph", "type": "string", "label": "Bar icon glyph", "defaultValue": "\uF084" },
@@ -41,7 +42,8 @@
       { "key": "passCliBin", "type": "string", "label": "pass-cli binary (optional)", "description": "Full path if pass-cli is not on PATH." },
       { "key": "vaultConfig", "type": "string", "label": "pass-cli config file (optional)", "description": "Passed as --config when your vault is not at the default location." },
       { "key": "gitRemote", "type": "string", "label": "Git remote URL (optional)", "description": "Private git remote for vault sync, e.g. git@github.com:you/pass-vault.git" },
-      { "key": "gitAuto", "type": "enum", "label": "Auto-push after changes", "options": ["On", "Off"], "defaultValue": "On" }
+      { "key": "gitAuto", "type": "enum", "label": "Auto-push after changes", "options": ["On", "Off"], "defaultValue": "On" },
+      { "key": "requirePin", "type": "enum", "label": "Require system password to open", "options": ["Off", "On"], "defaultValue": "Off", "description": "Verify your login password (via PAM) each time the vault opens. Nothing is stored." }
     ]
   }
 }

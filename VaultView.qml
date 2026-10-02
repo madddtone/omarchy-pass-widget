@@ -34,6 +34,9 @@ Item {
   property bool importOpen: false
   property bool syncOpen: false
   property int tick: 0
+  property string pinBuffer: ""
+  property string pinError: ""
+  readonly property bool pinLocked: service !== null && String(service.requirePin) === "On" && !service.unlocked
   property string revealedPassword: ""
   property string revealService: ""
 
@@ -183,7 +186,26 @@ Item {
     if (service && svc) service.deleteCredential(svc)
   }
 
+  function handlePinKey(event) {
+    if (event.key === Qt.Key_Escape) { root.closeRequested(); event.accepted = true; return }
+    if (event.key === Qt.Key_Backspace) {
+      pinBuffer = pinBuffer.slice(0, -1); pinError = ""; event.accepted = true; return
+    }
+    if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+      if (pinBuffer === "") { pinError = "Enter your password"; event.accepted = true; return }
+      if (service) service.unlock(pinBuffer)
+      event.accepted = true; return
+    }
+    if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32 && event.text.charCodeAt(0) !== 127) {
+      pinBuffer = pinBuffer + event.text; pinError = ""; event.accepted = true
+    }
+  }
+
   function handleKey(event) {
+    if (pinLocked) {
+      handlePinKey(event)
+      return
+    }
     if (syncOpen) {
       syncForm.handleKey(event)
       return
@@ -251,6 +273,7 @@ Item {
       else if (event.key === Qt.Key_S) { toggleReveal(); event.accepted = true }
       else if (event.key === Qt.Key_I) { openImport(); event.accepted = true }
       else if (event.key === Qt.Key_P) { openSync(); event.accepted = true }
+      else if (event.key === Qt.Key_L) { if (service) service.lockNow(); event.accepted = true }
     } else if (event.text === "?") {
       showHelp = true; event.accepted = true
     } else if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32 && event.text.charCodeAt(0) !== 127) {
@@ -279,6 +302,10 @@ Item {
     function onLockRequested() { root.closeRequested() }
     function onPasswordRevealed(service, password) {
       if (service === root.revealService) root.revealedPassword = String(password)
+    }
+    function onPinCheckResult(ok) {
+      if (ok) { root.pinBuffer = ""; root.pinError = "" }
+      else { root.pinBuffer = ""; root.pinError = "Wrong password" }
     }
   }
 
@@ -766,7 +793,7 @@ Item {
 
       Text {
         anchors.left: parent.left
-        text: "Enter copy · ⇧Enter user · ^Enter TOTP · ^O open · ^E edit · ^N new · ^I import · ^P sync · Del remove · ^G gen · Tab sort · ? help"
+        text: "Enter copy · ⇧Enter user · ^Enter TOTP · ^O open · ^E edit · ^N new · ^I import · ^P sync · ^L lock · Del remove · ^G gen · Tab sort · ? help"
         color: root.fg
         opacity: 0.45
         font.family: root.fontFamily
@@ -808,6 +835,71 @@ Item {
     onCloseRequested: root.syncOpen = false
   }
 
+  // Password gate: covers everything while locked.
+  Rectangle {
+    id: pinGate
+    anchors.fill: parent
+    z: 30
+    visible: root.pinLocked
+    color: Util.alpha(root.bg, 0.98)
+    radius: Style.cornerRadius
+
+    Column {
+      anchors.centerIn: parent
+      width: Math.min(parent.width - Style.space(80), Style.space(360))
+      spacing: Style.space(12)
+
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: "\uF023"
+        color: Color.accent
+        font.family: root.fontFamily
+        font.pixelSize: Style.space(40)
+      }
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: "Vault locked"
+        color: root.fg
+        font.family: root.fontFamily
+        font.pixelSize: Style.font.heading
+      }
+      Rectangle {
+        width: parent.width
+        height: Style.space(40)
+        radius: Style.cornerRadius
+        color: Util.alpha(root.fg, 0.06)
+        border.width: 1
+        border.color: root.pinError !== "" ? Color.urgent : Color.accent
+        Text {
+          anchors.centerIn: parent
+          text: root.pinBuffer !== "" ? new Array(root.pinBuffer.length + 1).join("•") : "Enter your password"
+          color: root.fg
+          opacity: root.pinBuffer !== "" ? 1 : 0.4
+          font.family: root.fontFamily
+          font.pixelSize: root.pinBuffer !== "" ? Style.font.title : Style.font.body
+        }
+      }
+      Text {
+        visible: root.pinError !== ""
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: root.pinError
+        color: Color.urgent
+        font.family: root.fontFamily
+        font.pixelSize: Style.font.caption
+      }
+      Text {
+        width: parent.width
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.WordWrap
+        text: "Unlock with your system password · Enter to unlock · Esc to close"
+        color: root.fg
+        opacity: 0.5
+        font.family: root.fontFamily
+        font.pixelSize: Style.font.caption
+      }
+    }
+  }
+
   Rectangle {
     anchors.right: parent.right
     anchors.bottom: parent.bottom
@@ -845,7 +937,7 @@ Item {
         opacity: 0.85
         font.family: root.fontFamily
         font.pixelSize: Style.font.body
-        text: "Type to search · ↑/↓ move · Enter copy password · Shift+Enter username · Ctrl+Enter TOTP · Ctrl+O open URL · Ctrl+E edit · Ctrl+N new · Ctrl+I import · Ctrl+P git sync · Delete remove · Ctrl+G generate · Ctrl+R refresh · Ctrl+S reveal · Tab sort · Esc back"
+        text: "Type to search · ↑/↓ move · Enter copy password · Shift+Enter username · Ctrl+Enter TOTP · Ctrl+O open URL · Ctrl+E edit · Ctrl+N new · Ctrl+I import · Ctrl+P git sync · Ctrl+L lock · Delete remove · Ctrl+G generate · Ctrl+R refresh · Ctrl+S reveal · Tab sort · Esc back"
       }
     }
   }

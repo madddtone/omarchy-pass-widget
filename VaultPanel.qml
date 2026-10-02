@@ -16,7 +16,7 @@ Panel {
   readonly property var barIdentity: hostWidget || root
 
   function open() {
-    if (service) { service.refresh(); service.touch() }
+    if (service) { service.refresh(); service.touch(); service.lockNow() }
     root.controller.show()
     Qt.callLater(function () { if (root.opened) setCenterHoverRevealSuppressed(true) })
   }

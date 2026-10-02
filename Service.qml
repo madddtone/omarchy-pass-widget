@@ -21,6 +21,8 @@ Item {
   property int lockMinutes: 5
   property string gitRemote: ""
   property string gitAuto: "On"
+  property string requirePin: "Off"
+  property bool unlocked: true
 
   property var credentials: []
   property var categories: []
@@ -38,6 +40,7 @@ Item {
   signal importDirLoaded(string dir, string parent, string home, var entries)
   signal gitStatusLoaded(var status)
   signal gitResult(var result)
+  signal pinCheckResult(bool ok)
 
   function _notify(text, error) {
     root.feedback(String(text), error === true)
@@ -219,6 +222,18 @@ Item {
     if (String(root.gitAuto) === "On") autoPushTimer.restart()
   }
 
+  // Require the system password on each open when enabled.
+  function lockNow() {
+    if (String(root.requirePin) === "On") root.unlocked = false
+  }
+
+  function unlock(pin) {
+    if (lockProc.running) return
+    lockProc.pin = String(pin)
+    lockProc.command = ["bash", root.pluginDir + "/scripts/lock-check.sh"]
+    lockProc.running = true
+  }
+
   function loadImportDir(dir) {
     if (candProc.running) return
     var a = [root._python(), root.pluginDir + "/scripts/import.py", "--browse"]
@@ -325,6 +340,24 @@ Item {
     id: autoPushTimer
     interval: 3000
     onTriggered: root.gitPush()
+  }
+
+  Process {
+    id: lockProc
+    property string pin: ""
+    stdinEnabled: true
+    stdout: StdioCollector { id: lockOut; waitForEnd: true }
+    stderr: StdioCollector { id: lockErr; waitForEnd: true }
+    onStarted: { write(lockProc.pin + "\n"); lockProc.pin = "" }
+    onExited: function (exitCode) {
+      var ok = false
+      try {
+        var r = JSON.parse(String(lockOut.text || ""))
+        ok = r && r.ok === true
+      } catch (e) { ok = false }
+      if (ok) root.unlocked = true
+      root.pinCheckResult(ok)
+    }
   }
 
   Process {

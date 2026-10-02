@@ -68,6 +68,7 @@ browser.
 | `Ctrl+G` | generate a password |
 | `Ctrl+I` | import (CSV/JSON/ZIP) |
 | `Ctrl+P` | git sync |
+| `Ctrl+L` | lock now (requires the password again) |
 | `Delete` | delete selected |
 | `Tab` | toggle sort (recent / A–Z) |
 | `R`/`Esc` | refresh / back |
@@ -86,11 +87,27 @@ encrypted `vault.enc`** and pushes it to a private remote (auto-push after
 changes is on by default). It is file-level sync of the encrypted blob — use
 one machine at a time; if two diverge, git reports it and you pick a side.
 
+## Lock (system password)
+
+Set **Require system password to open** to `On` (settings, or `"requirePin": "On"`
+on the widget's entry in `shell.json`). While enabled, every time the vault opens
+it shows a lock screen and asks for your **login password** before revealing
+anything. `Ctrl+L` locks it again immediately.
+
+The password is verified through PAM via `sudo -v` with the value passed over
+stdin, and the sudo timestamp is invalidated before and after — so nothing is
+stored and sudo is not left unlocked. It requires your account to use a
+password (not fingerprint-only login).
+
+This is a privacy gate, not vault encryption: the vault file stays encrypted by
+`pass-cli`, but anyone with your session and keychain can still run `pass-cli`
+directly.
+
 ## Settings
 
 Per-widget settings (via `~/.config/omarchy/shell.json` or the bar settings UI):
 `glyph`, `showLabel`, `hideUsernames`, `lockMinutes`, `defaultCopyField`,
-`passCliBin`, `vaultConfig`, `gitRemote`, `gitAuto`.
+`passCliBin`, `vaultConfig`, `gitRemote`, `gitAuto`, `requirePin`.
 
 ## Security
 

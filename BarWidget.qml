@@ -30,6 +30,7 @@ BarWidget {
     service.defaultCopyField = String(setting("defaultCopyField", "password"))
     service.gitRemote = String(setting("gitRemote", ""))
     service.gitAuto = String(setting("gitAuto", "On"))
+    service.requirePin = String(setting("requirePin", "Off"))
   }
 
   onServiceChanged: pushSettings()

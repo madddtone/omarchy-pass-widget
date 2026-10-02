@@ -13,7 +13,7 @@ Item {
 
   function open(payloadJson) {
     root.opened = true
-    if (service) { service.refresh(); service.touch() }
+    if (service) { service.refresh(); service.touch(); service.lockNow() }
     Qt.callLater(function () {
       if (vault) vault.keyCatcher.forceActiveFocus()
     })
