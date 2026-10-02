@@ -5,10 +5,10 @@ import qs.Commons
 BarWidget {
   id: root
 
-  moduleName: "kalel.pass"
+  moduleName: "madddtone.pass"
 
   readonly property var service: bar && bar.shell && typeof bar.shell.serviceFor === "function"
-    ? bar.shell.serviceFor("kalel.pass") : null
+    ? bar.shell.serviceFor("madddtone.pass") : null
 
   readonly property bool opened: panelLoader.item ? panelLoader.item.opened : false
 
@@ -69,7 +69,7 @@ BarWidget {
 
     onPressed: function (buttonCode) {
       if (buttonCode === Qt.LeftButton) root.toggle()
-      else if (buttonCode === Qt.RightButton) root.bar.run("omarchy-shell shell summon kalel.pass")
+      else if (buttonCode === Qt.RightButton) root.bar.run("omarchy-shell shell summon madddtone.pass")
       else if (buttonCode === Qt.MiddleButton && root.service) root.service.refresh()
     }
   }

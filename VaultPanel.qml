@@ -5,8 +5,8 @@ import qs.Commons
 Panel {
   id: root
 
-  moduleName: "kalel.pass"
-  ipcTarget: "kalel.pass"
+  moduleName: "madddtone.pass"
+  ipcTarget: "madddtone.pass"
   manageIpc: false
 
   property var anchorItem: null

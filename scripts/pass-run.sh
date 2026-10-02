@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Safe non-interactive pass-cli runner for the kalel.pass widget.
+# Safe non-interactive pass-cli runner for the madddtone.pass widget.
 # Options before the command:
 #   --bin <path>      explicit pass-cli binary
 #   --config <path>   pass-cli config file

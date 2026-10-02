@@ -13,14 +13,14 @@ both keyboard-first, with search, copy, TOTP, a password generator, add/edit,
 CSV import, and optional **GitHub git-sync** of the encrypted vault.
 
 ```
-┌─ Pass ─────────────────────────────────────────────────────────┐
-│  Search vault…                                     Recent      │
-├────────────┬──────────────────────────┬────────────────────────┤
-│ CATEGORIES │  github                  │  github                │
-│ All (405)  │  kalel@example.com       │  Username  kalel@…     │
-│ Personal   │  proton                  │  Password  ••••••  Show│
-│ Work       │  accounts.google.com     │  Website   …       Open│
-└────────────┴──────────────────────────┴────────────────────────┘
+┌─ Pass ───────────────────────────────────────────────────────┐
+│  Search vault…                                   Recent      │
+├────────────┬────────────────────────┬────────────────────────┤
+│ CATEGORIES │  github                │  github                │
+│ All        │  user@example.com      │  Username  user@…      │
+│ Personal   │  proton                │  Password  •••••• Show │
+│ Work       │  accounts.google.com   │  Website   …      Open │
+└────────────┴────────────────────────┴────────────────────────┘
 ```
 
 ## Requirements
@@ -36,17 +36,17 @@ CSV import, and optional **GitHub git-sync** of the encrypted vault.
 
 ```bash
 omarchy plugin add https://github.com/madddtone/omarchy-pass-widget.git --enable --yes
-omarchy bar move kalel.pass --section right
+omarchy bar move madddtone.pass --section right
 ```
 
-Or by hand: copy this directory to `~/.config/omarchy/plugins/kalel.pass/`,
-then `omarchy-shell shell rescanPlugins` and `omarchy plugin enable kalel.pass`.
+Or by hand: copy this directory to `~/.config/omarchy/plugins/madddtone.pass/`,
+then `omarchy-shell shell rescanPlugins` and `omarchy plugin enable madddtone.pass`.
 
 ## Keybinding
 
 ```lua
 -- ~/.config/hypr/bindings.lua
-o.bind("SUPER + CTRL + P", "Pass", "omarchy-shell shell summon kalel.pass")
+o.bind("SUPER + CTRL + P", "Pass", "omarchy-shell shell summon madddtone.pass")
 ```
 
 Left-click the bar icon opens the popup; right-click opens the fullscreen

@@ -256,7 +256,7 @@ Item {
             if (Array.isArray(parsed.entries)) entries = parsed.entries
           }
         } catch (e) {
-          console.warn("kalel.pass: browse parse failed:", e)
+          console.warn("madddtone.pass: browse parse failed:", e)
         }
       }
       root.importDirLoaded(dir, parent, home, entries)
@@ -412,7 +412,7 @@ Item {
   }
 
   IpcHandler {
-    target: "kalel.pass"
+    target: "madddtone.pass"
 
     function refresh(): void { root.refresh() }
     function copyPassword(service: string): void { root.copyPassword(service) }
