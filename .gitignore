@@ -1,0 +1,11 @@
+# Editor / OS cruft
+*.bak
+*.bak.*
+*~
+.DS_Store
+*.swp
+*.log
+
+# Python
+__pycache__/
+*.pyc

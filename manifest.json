@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "kalel.pass",
+  "name": "Pass",
+  "version": "0.1.0",
+  "author": "madddtone",
+  "license": "MIT",
+  "homepage": "https://github.com/madddtone/omarchy-pass-widget",
+  "description": "Local password vault powered by pass-cli: a bar popup and a fullscreen vault browser with search, keyboard copy/open, TOTP, and credential management.",
+  "kinds": ["service", "bar-widget", "overlay"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml",
+    "overlay": "Overlay.qml"
+  },
+  "barWidget": {
+    "displayName": "Pass",
+    "description": "Search, copy, and manage your pass-cli vault.",
+    "category": "Security",
+    "aliases": ["pass", "vault", "passwords", "credentials"],
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "glyph": "\uF084",
+      "showLabel": "Off",
+      "hideUsernames": "Off",
+      "lockMinutes": 5,
+      "defaultCopyField": "password",
+      "passCliBin": "",
+      "vaultConfig": "",
+      "gitRemote": "",
+      "gitAuto": "On"
+    },
+    "schema": [
+      { "key": "glyph", "type": "string", "label": "Bar icon glyph", "defaultValue": "\uF084" },
+      { "key": "showLabel", "type": "enum", "label": "Show label", "options": ["Off", "On"], "defaultValue": "Off" },
+      { "key": "hideUsernames", "type": "enum", "label": "Hide usernames in list", "options": ["Off", "On"], "defaultValue": "Off" },
+      { "key": "lockMinutes", "type": "integer", "label": "UI lock after (minutes, 0 = never)", "min": 0, "max": 120, "step": 1, "defaultValue": 5 },
+      { "key": "defaultCopyField", "type": "enum", "label": "Enter copies", "options": ["password", "username"], "defaultValue": "password" },
+      { "key": "passCliBin", "type": "string", "label": "pass-cli binary (optional)", "description": "Full path if pass-cli is not on PATH." },
+      { "key": "vaultConfig", "type": "string", "label": "pass-cli config file (optional)", "description": "Passed as --config when your vault is not at the default location." },
+      { "key": "gitRemote", "type": "string", "label": "Git remote URL (optional)", "description": "Private git remote for vault sync, e.g. git@github.com:you/pass-vault.git" },
+      { "key": "gitAuto", "type": "enum", "label": "Auto-push after changes", "options": ["On", "Off"], "defaultValue": "On" }
+    ]
+  }
+}
