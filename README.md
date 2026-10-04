@@ -90,9 +90,12 @@ one machine at a time; if two diverge, git reports it and you pick a side.
 ## Lock (system password)
 
 Set **Require system password to open** to `On` (settings, or `"requirePin": "On"`
-on the widget's entry in `shell.json`). While enabled, every time the vault opens
-it shows a lock screen and asks for your **login password** before revealing
-anything. `Ctrl+L` locks it again immediately.
+on the widget's entry in `shell.json`). While enabled, the vault shows a lock
+screen and asks for your **login password** before revealing anything.
+
+After a correct password it stays unlocked for **5 minutes** (`unlockMinutes`,
+set to `0` to require it on every open), so reopening the widget in that window
+does not ask again. `Ctrl+L` locks it immediately.
 
 The password is verified through PAM via `sudo -v` with the value passed over
 stdin, and the sudo timestamp is invalidated before and after — so nothing is

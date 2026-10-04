@@ -22,7 +22,9 @@ Item {
   property string gitRemote: ""
   property string gitAuto: "On"
   property string requirePin: "Off"
+  property int unlockMinutes: 5
   property bool unlocked: true
+  property double unlockedUntil: 0
 
   property var credentials: []
   property var categories: []
@@ -222,9 +224,18 @@ Item {
     if (String(root.gitAuto) === "On") autoPushTimer.restart()
   }
 
-  // Require the system password on each open when enabled.
+  // Require the system password when enabled, except within the grace window
+  // started by a successful unlock.
   function lockNow() {
-    if (String(root.requirePin) === "On") root.unlocked = false
+    if (String(root.requirePin) !== "On") return
+    if (root.unlockMinutes > 0 && Date.now() < root.unlockedUntil) return
+    root.unlocked = false
+    root.unlockedUntil = 0
+  }
+
+  function lockForIdle() {
+    root.unlocked = false
+    root.unlockedUntil = 0
   }
 
   function unlock(pin) {
@@ -342,6 +353,19 @@ Item {
     onTriggered: root.gitPush()
   }
 
+  // Re-lock when the post-unlock grace window elapses.
+  Timer {
+    interval: 15000
+    repeat: true
+    running: String(root.requirePin) === "On" && root.unlockMinutes > 0
+    onTriggered: {
+      if (root.unlocked && Date.now() >= root.unlockedUntil) {
+        root.unlocked = false
+        root.unlockedUntil = 0
+      }
+    }
+  }
+
   Process {
     id: lockProc
     property string pin: ""
@@ -355,7 +379,10 @@ Item {
         var r = JSON.parse(String(lockOut.text || ""))
         ok = r && r.ok === true
       } catch (e) { ok = false }
-      if (ok) root.unlocked = true
+      if (ok) {
+        root.unlocked = true
+        root.unlockedUntil = root.unlockMinutes > 0 ? Date.now() + root.unlockMinutes * 60000 : 0
+      }
       root.pinCheckResult(ok)
     }
   }
@@ -440,6 +467,7 @@ Item {
       root.credentials = []
       root.categories = []
       root.state = "locked"
+      root.lockForIdle()
       root.lockRequested()
     }
   }

@@ -31,7 +31,8 @@
       "vaultConfig": "",
       "gitRemote": "",
       "gitAuto": "On",
-      "requirePin": "Off"
+      "requirePin": "Off",
+      "unlockMinutes": 5
     },
     "schema": [
       { "key": "glyph", "type": "string", "label": "Bar icon glyph", "defaultValue": "\uF084" },
@@ -43,7 +44,8 @@
       { "key": "vaultConfig", "type": "string", "label": "pass-cli config file (optional)", "description": "Passed as --config when your vault is not at the default location." },
       { "key": "gitRemote", "type": "string", "label": "Git remote URL (optional)", "description": "Private git remote for vault sync, e.g. git@github.com:you/pass-vault.git" },
       { "key": "gitAuto", "type": "enum", "label": "Auto-push after changes", "options": ["On", "Off"], "defaultValue": "On" },
-      { "key": "requirePin", "type": "enum", "label": "Require system password to open", "options": ["Off", "On"], "defaultValue": "Off", "description": "Verify your login password (via PAM) each time the vault opens. Nothing is stored." }
+      { "key": "requirePin", "type": "enum", "label": "Require system password to open", "options": ["Off", "On"], "defaultValue": "Off", "description": "Verify your login password (via PAM) each time the vault opens. Nothing is stored." },
+      { "key": "unlockMinutes", "type": "integer", "label": "Stay unlocked after password (minutes, 0 = every open)", "min": 0, "max": 120, "step": 1, "defaultValue": 5 }
     ]
   }
 }

@@ -31,6 +31,7 @@ BarWidget {
     service.gitRemote = String(setting("gitRemote", ""))
     service.gitAuto = String(setting("gitAuto", "On"))
     service.requirePin = String(setting("requirePin", "Off"))
+    service.unlockMinutes = Number(setting("unlockMinutes", 5)) || 0
   }
 
   onServiceChanged: pushSettings()

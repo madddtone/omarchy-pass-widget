@@ -892,6 +892,8 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         wrapMode: Text.WordWrap
         text: "Unlock with your system password · Enter to unlock · Esc to close"
+              + (service && service.unlockMinutes > 0
+                 ? ("\nStays unlocked for " + service.unlockMinutes + " min after unlocking.") : "")
         color: root.fg
         opacity: 0.5
         font.family: root.fontFamily
